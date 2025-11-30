@@ -1,0 +1,125 @@
+[
+    {
+        "id": "proposal-001",
+        "title": "Enterprise Software Development Proposal",
+        "uploadDate": "2024-03-10T14:30:00Z",
+        "uploadedBy": "John Doe",
+        "status": "processed",
+        "pdfUrl": "/mock/sample.pdf",
+        "metadata": {
+            "projectName": "Customer Portal Redesign",
+            "budget": 275000,
+            "currency": "USD",
+            "timeline": "8 months",
+            "scope": [
+                "UI/UX redesign of customer portal",
+                "Backend API development",
+                "Database migration",
+                "Mobile responsive design",
+                "User authentication system"
+            ],
+            "requirements": [
+                "React frontend framework",
+                "Node.js backend",
+                "PostgreSQL database",
+                "AWS cloud hosting",
+                "99.9% uptime SLA"
+            ],
+            "deliverables": [
+                "Fully functional customer portal",
+                "Administrative dashboard",
+                "API documentation",
+                "User training materials",
+                "6 months post-launch support"
+            ],
+            "parties": [
+                "TechCorp Inc.",
+                "Solutions Ltd."
+            ],
+            "startDate": "2024-04-01",
+            "endDate": "2024-11-30"
+        }
+    },
+    {
+        "id": "proposal-002",
+        "title": "Cloud Infrastructure Migration Proposal",
+        "uploadDate": "2024-03-05T10:15:00Z",
+        "uploadedBy": "Sarah Wilson",
+        "status": "processed",
+        "pdfUrl": "/mock/sample.pdf",
+        "metadata": {
+            "projectName": "AWS Cloud Migration",
+            "budget": 450000,
+            "currency": "USD",
+            "timeline": "12 months",
+            "scope": [
+                "Assessment of current infrastructure",
+                "Migration planning and design",
+                "Data migration",
+                "Application refactoring",
+                "Security and compliance setup"
+            ],
+            "requirements": [
+                "Zero downtime migration",
+                "SOC 2 Type II compliance",
+                "Multi-region deployment",
+                "Auto-scaling capabilities",
+                "Disaster recovery plan"
+            ],
+            "deliverables": [
+                "Migrated cloud infrastructure",
+                "Architecture documentation",
+                "Security audit report",
+                "Staff training program",
+                "3 months managed services"
+            ],
+            "parties": [
+                "DataCloud Systems",
+                "TechCorp Inc."
+            ],
+            "startDate": "2024-04-01",
+            "endDate": "2025-03-31"
+        }
+    },
+    {
+        "id": "proposal-003",
+        "title": "Marketing Automation Platform",
+        "uploadDate": "2024-02-20T16:45:00Z",
+        "uploadedBy": "Marketing Team",
+        "status": "processed",
+        "pdfUrl": "/mock/sample.pdf",
+        "metadata": {
+            "projectName": "AI-Powered Marketing Platform",
+            "budget": 180000,
+            "currency": "USD",
+            "timeline": "6 months",
+            "scope": [
+                "Email campaign automation",
+                "Customer segmentation",
+                "Analytics dashboard",
+                "A/B testing framework",
+                "CRM integration"
+            ],
+            "requirements": [
+                "Integration with Salesforce",
+                "GDPR compliance",
+                "Real-time analytics",
+                "Mobile app support",
+                "API access for custom integrations"
+            ],
+            "deliverables": [
+                "Marketing automation platform",
+                "Analytics dashboard",
+                "Integration connectors",
+                "Campaign templates",
+                "User documentation"
+            ],
+            "parties": [
+                "MarketPro Solutions",
+                "Acme Corp"
+            ],
+            "startDate": "2024-03-15",
+            "endDate": "2024-09-15"
+        }
+    }
+]

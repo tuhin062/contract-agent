@@ -1,0 +1,359 @@
+[
+    {
+        "id": "contract-001",
+        "title": "Software Development Service Agreement",
+        "type": "service_agreement",
+        "status": "active",
+        "parties": [
+            "TechCorp Inc.",
+            "Solutions Ltd."
+        ],
+        "startDate": "2024-01-15",
+        "endDate": "2025-01-14",
+        "owner": "John Doe",
+        "pdfUrl": "/mock/sample.pdf",
+        "createdAt": "2024-01-10T10:00:00Z",
+        "updatedAt": "2024-01-15T14:30:00Z",
+        "tags": [
+            "software",
+            "development",
+            "annual"
+        ],
+        "metadata": {
+            "contractValue": 250000,
+            "currency": "USD",
+            "renewalTerms": "Auto-renewal unless 60 days notice",
+            "terminationClause": "30 days written notice required",
+            "governingLaw": "New York",
+            "signatories": [
+                "Jane Smith, CTO",
+                "Robert Johnson, CEO"
+            ]
+        },
+        "insights": {
+            "summary": "This is a comprehensive software development service agreement establishing a one-year engagement for custom application development. The contract includes IP transfer provisions, milestone-based payments, and standard professional services terms.",
+            "keyClauses": [
+                {
+                    "title": "Payment Terms",
+                    "content": "Payment shall be made in monthly installments of $20,833.33 within 15 days of invoice receipt.",
+                    "page": 3,
+                    "category": "payment"
+                },
+                {
+                    "title": "Intellectual Property Rights",
+                    "content": "All deliverables and work product shall be owned exclusively by the Client upon full payment.",
+                    "page": 5,
+                    "category": "ip_rights"
+                },
+                {
+                    "title": "Termination for Convenience",
+                    "content": "Either party may terminate this agreement with 30 days written notice.",
+                    "page": 8,
+                    "category": "termination"
+                }
+            ],
+            "risks": [
+                {
+                    "id": "risk-001",
+                    "severity": "medium",
+                    "title": "Unlimited Liability",
+                    "description": "No cap on liability for consequential damages",
+                    "recommendation": "Negotiate a liability cap or exclude consequential damages"
+                }
+            ],
+            "recommendations": [
+                "Consider adding milestone review meetings",
+                "Add change request process documentation",
+                "Include SLA metrics and penalties"
+            ]
+        },
+        "versions": [
+            {
+                "id": "v1",
+                "version": "1.0",
+                "uploadedBy": "John Doe",
+                "uploadedAt": "2024-01-10T10:00:00Z",
+                "changes": "Initial version",
+                "pdfUrl": "/mock/sample.pdf"
+            }
+        ]
+    },
+    {
+        "id": "contract-002",
+        "title": "Non-Disclosure Agreement - Project Phoenix",
+        "type": "nda",
+        "status": "active",
+        "parties": [
+            "Acme Corp",
+            "Beta Technologies"
+        ],
+        "startDate": "2024-02-01",
+        "endDate": "2026-02-01",
+        "owner": "Sarah Wilson",
+        "pdfUrl": "/mock/sample.pdf",
+        "createdAt": "2024-01-28T09:00:00Z",
+        "updatedAt": "2024-02-01T11:00:00Z",
+        "tags": [
+            "nda",
+            "confidential",
+            "project-phoenix"
+        ],
+        "metadata": {
+            "governingLaw": "California",
+            "signatories": [
+                "Michael Chen, VP",
+                "Lisa Martinez, Director"
+            ]
+        },
+        "insights": {
+            "summary": "Bilateral NDA for confidential discussions regarding potential partnership on Project Phoenix. Standard 2-year term with mutual confidentiality obligations.",
+            "keyClauses": [
+                {
+                    "title": "Definition of Confidential Information",
+                    "content": "All technical and business information disclosed in connection with Project Phoenix discussions.",
+                    "page": 1,
+                    "category": "confidentiality"
+                },
+                {
+                    "title": "Non-Disclosure Obligation",
+                    "content": "Parties agree not to disclose confidential information for 2 years from termination.",
+                    "page": 2,
+                    "category": "confidentiality"
+                }
+            ],
+            "risks": [],
+            "recommendations": [
+                "Standard NDA terms - no significant concerns"
+            ]
+        },
+        "versions": [
+            {
+                "id": "v1",
+                "version": "1.0",
+                "uploadedBy": "Sarah Wilson",
+                "uploadedAt": "2024-01-28T09:00:00Z",
+                "changes": "Initial draft",
+                "pdfUrl": "/mock/sample.pdf"
+            }
+        ]
+    },
+    {
+        "id": "contract-003",
+        "title": "Employment Agreement - Senior Software Engineer",
+        "type": "employment",
+        "status": "active",
+        "parties": [
+            "TechStart Inc.",
+            "Alice Johnson"
+        ],
+        "startDate": "2024-03-01",
+        "endDate": null,
+        "owner": "HR Department",
+        "pdfUrl": "/mock/sample.pdf",
+        "createdAt": "2024-02-15T10:00:00Z",
+        "updatedAt": "2024-03-01T09:00:00Z",
+        "tags": [
+            "employment",
+            "engineering",
+            "full-time"
+        ],
+        "metadata": {
+            "contractValue": 150000,
+            "currency": "USD",
+            "governingLaw": "Delaware",
+            "signatories": [
+                "David Park, CEO",
+                "Alice Johnson"
+            ]
+        },
+        "insights": {
+            "summary": "Full-time employment agreement for Senior Software Engineer position. Includes standard benefits, IP assignment, and non-compete clauses.",
+            "keyClauses": [
+                {
+                    "title": "Compensation",
+                    "content": "Annual base salary of $150,000, payable bi-weekly.",
+                    "page": 2,
+                    "category": "payment"
+                },
+                {
+                    "title": "Intellectual Property Assignment",
+                    "content": "All work product created during employment belongs to the Company.",
+                    "page": 4,
+                    "category": "ip_rights"
+                }
+            ],
+            "risks": [
+                {
+                    "id": "risk-003",
+                    "severity": "low",
+                    "title": "Broad Non-Compete",
+                    "description": "Non-compete clause covers entire tech industry",
+                    "recommendation": "Consider narrowing scope to direct competitors only"
+                }
+            ],
+            "recommendations": [
+                "Review state-specific non-compete enforceability"
+            ]
+        },
+        "versions": [
+            {
+                "id": "v1",
+                "version": "1.0",
+                "uploadedBy": "HR Department",
+                "uploadedAt": "2024-02-15T10:00:00Z",
+                "changes": "Initial offer",
+                "pdfUrl": "/mock/sample.pdf"
+            }
+        ]
+    },
+    {
+        "id": "contract-004",
+        "title": "Vendor Agreement - Cloud Services",
+        "type": "vendor",
+        "status": "pending_approval",
+        "parties": [
+            "DataCloud Systems",
+            "TechCorp Inc."
+        ],
+        "startDate": "2024-04-01",
+        "endDate": "2027-03-31",
+        "owner": "IT Department",
+        "pdfUrl": "/mock/sample.pdf",
+        "createdAt": "2024-03-10T14:00:00Z",
+        "updatedAt": "2024-03-15T16:20:00Z",
+        "tags": [
+            "vendor",
+            "cloud",
+            "infrastructure"
+        ],
+        "metadata": {
+            "contractValue": 500000,
+            "currency": "USD",
+            "renewalTerms": "Annual renewal with price adjustment",
+            "governingLaw": "Washington",
+            "signatories": []
+        },
+        "insights": {
+            "summary": "3-year cloud infrastructure services agreement with DataCloud Systems. Includes SLA commitments, data privacy provisions, and scaling terms.",
+            "keyClauses": [
+                {
+                    "title": "Service Level Agreement",
+                    "content": "99.9% uptime guarantee with credits for downtime.",
+                    "page": 6,
+                    "category": "other"
+                },
+                {
+                    "title": "Data Privacy",
+                    "content": "Vendor complies with GDPR and SOC 2 Type II standards.",
+                    "page": 12,
+                    "category": "confidentiality"
+                }
+            ],
+            "risks": [
+                {
+                    "id": "risk-004",
+                    "severity": "high",
+                    "title": "Limited Liability Cap",
+                    "description": "Vendor liability capped at one month's fees",
+                    "recommendation": "Negotiate higher liability cap or separate cyber insurance requirement"
+                }
+            ],
+            "recommendations": [
+                "Add business continuity and disaster recovery requirements",
+                "Include right to audit vendor's security practices"
+            ]
+        },
+        "versions": [
+            {
+                "id": "v1",
+                "version": "1.0",
+                "uploadedBy": "IT Department",
+                "uploadedAt": "2024-03-10T14:00:00Z",
+                "changes": "Initial draft from vendor",
+                "pdfUrl": "/mock/sample.pdf"
+            }
+        ]
+    },
+    {
+        "id": "contract-005",
+        "title": "Strategic Partnership Agreement",
+        "type": "partnership",
+        "status": "draft",
+        "parties": [
+            "Innovation Labs",
+            "Future Tech Corp"
+        ],
+        "startDate": "2024-05-01",
+        "endDate": "2029-04-30",
+        "owner": "Business Development",
+        "pdfUrl": "/mock/sample.pdf",
+        "createdAt": "2024-03-20T11:00:00Z",
+        "updatedAt": "2024-03-25T10:15:00Z",
+        "tags": [
+            "partnership",
+            "strategic",
+            "long-term"
+        ],
+        "metadata": {
+            "contractValue": 2000000,
+            "currency": "USD",
+            "renewalTerms": "Mutual agreement required for renewal",
+            "governingLaw": "Delaware",
+            "signatories": []
+        },
+        "insights": {
+            "summary": "Long-term strategic partnership for joint product development and market expansion. Includes revenue sharing, joint IP ownership, and governance structure.",
+            "keyClauses": [
+                {
+                    "title": "Revenue Sharing",
+                    "content": "Net revenues split 60/40 in favor of Innovation Labs.",
+                    "page": 8,
+                    "category": "payment"
+                },
+                {
+                    "title": "Joint IP Ownership",
+                    "content": "All jointly developed IP owned equally by both parties.",
+                    "page": 15,
+                    "category": "ip_rights"
+                },
+                {
+                    "title": "Governance Committee",
+                    "content": "Joint steering committee with equal representation.",
+                    "page": 20,
+                    "category": "other"
+                }
+            ],
+            "risks": [
+                {
+                    "id": "risk-005",
+                    "severity": "critical",
+                    "title": "Unclear Deadlock Resolution",
+                    "description": "No mechanism for resolving governance deadlocks",
+                    "recommendation": "Add arbitration or mediation clause for deadlock situations"
+                },
+                {
+                    "id": "risk-006",
+                    "severity": "high",
+                    "title": "IP Assignment Ambiguity",
+                    "description": "Unclear what constitutes 'joint IP' vs individual IP",
+                    "recommendation": "Define clear criteria for joint vs. individual IP development"
+                }
+            ],
+            "recommendations": [
+                "Add detailed IP contribution tracking process",
+                "Include termination rights if milestones not met",
+                "Define exclusivity scope and territories"
+            ]
+        },
+        "versions": [
+            {
+                "id": "v1",
+                "version": "0.9",
+                "uploadedBy": "Business Development",
+                "uploadedAt": "2024-03-20T11:00:00Z",
+                "changes": "Initial draft for review",
+                "pdfUrl": "/mock/sample.pdf"
+            }
+        ]
+    }
+]

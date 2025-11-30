@@ -1,0 +1,159 @@
+{
+    "id": "validation-001",
+    "contractName": "Software Development Service Agreement",
+    "proposalId": "proposal-001",
+    "proposalName": "Enterprise Software Development Proposal",
+    "validatedAt": "2024-03-12T10:30:00Z",
+    "overallScore": 75,
+    "status": "warning",
+    "extractedClauses": [
+        {
+            "id": "clause-001",
+            "title": "Payment Terms",
+            "content": "Payment shall be made in monthly installments of $20,833.33",
+            "page": 3,
+            "confidence": 0.95,
+            "category": "payment"
+        },
+        {
+            "id": "clause-002",
+            "title": "Project Timeline",
+            "content": "Project shall be completed within 12 months from commencement",
+            "page": 3,
+            "confidence": 0.92,
+            "category": "timeline"
+        },
+        {
+            "id": "clause-003",
+            "title": "Deliverables",
+            "content": "Contractor shall deliver functional web application with admin dashboard",
+            "page": 4,
+            "confidence": 0.90,
+            "category": "deliverables"
+        },
+        {
+            "id": "clause-004",
+            "title": "Intellectual Property",
+            "content": "All work product shall be owned by Client upon full payment",
+            "page": 5,
+            "confidence": 0.97,
+            "category": "ip_rights"
+        },
+        {
+            "id": "clause-005",
+            "title": "Liability Cap",
+            "content": "Total liability shall not exceed the total contract value",
+            "page": 7,
+            "confidence": 0.88,
+            "category": "liability"
+        }
+    ],
+    "riskFlags": [
+        {
+            "id": "risk-flag-001",
+            "severity": "high",
+            "category": "budget",
+            "title": "Budget Mismatch",
+            "description": "Contract total ($250,000) is lower than proposal budget ($275,000)",
+            "clause": "Total contract value: $250,000",
+            "recommendation": "Clarify scope reduction or request contract amendment to match proposal budget",
+            "impact": "May result in reduced deliverables or quality compromises"
+        },
+        {
+            "id": "risk-flag-002",
+            "severity": "medium",
+            "category": "timeline",
+            "title": "Timeline Discrepancy",
+            "description": "Contract specifies 12 months but proposal indicates 8 months",
+            "clause": "Project completion within 12 months",
+            "recommendation": "Align timeline expectations or adjust milestones accordingly",
+            "impact": "Potential delay in project delivery"
+        },
+        {
+            "id": "risk-flag-003",
+            "severity": "low",
+            "category": "deliverables",
+            "title": "Support Period Missing",
+            "description": "Contract does not mention 6-month post-launch support from proposal",
+            "clause": "Project deliverables section",
+            "recommendation": "Add amendment to include post-launch support terms",
+            "impact": "Client may lack expected support after delivery"
+        },
+        {
+            "id": "risk-flag-004",
+            "severity": "critical",
+            "category": "technical",
+            "title": "SLA Requirement Not Addressed",
+            "description": "Proposal requires 99.9% uptime SLA but contract has no SLA clause",
+            "clause": "Missing SLA clause",
+            "recommendation": "Add SLA commitments matching proposal requirements",
+            "impact": "No recourse if system availability falls below expectations"
+        }
+    ],
+    "clauseComparisons": [
+        {
+            "id": "comp-001",
+            "clauseName": "Project Budget",
+            "contractValue": "$250,000 USD",
+            "proposalValue": "$275,000 USD",
+            "match": "mismatch",
+            "notes": "Contract amount is $25,000 less than proposed"
+        },
+        {
+            "id": "comp-002",
+            "clauseName": "Project Duration",
+            "contractValue": "12 months",
+            "proposalValue": "8 months",
+            "match": "mismatch",
+            "notes": "Contract allows 4 additional months"
+        },
+        {
+            "id": "comp-003",
+            "clauseName": "Technology Stack",
+            "contractValue": "Not specified",
+            "proposalValue": "React, Node.js, PostgreSQL, AWS",
+            "match": "missing",
+            "notes": "Contract does not specify required technologies"
+        },
+        {
+            "id": "comp-004",
+            "clauseName": "IP Ownership",
+            "contractValue": "Client owns all work product upon payment",
+            "proposalValue": "Client retains full IP rights",
+            "match": "exact",
+            "notes": "IP terms align perfectly"
+        },
+        {
+            "id": "comp-005",
+            "clauseName": "Deliverables",
+            "contractValue": "Customer portal and admin dashboard",
+            "proposalValue": "Customer portal, admin dashboard, API docs, training",
+            "match": "partial",
+            "notes": "Contract missing API documentation and training materials"
+        },
+        {
+            "id": "comp-006",
+            "clauseName": "Support Period",
+            "contractValue": "Not specified",
+            "proposalValue": "6 months post-launch support",
+            "match": "missing",
+            "notes": "Post-launch support not mentioned in contract"
+        },
+        {
+            "id": "comp-007",
+            "clauseName": "SLA Commitment",
+            "contractValue": "Not specified",
+            "proposalValue": "99.9% uptime",
+            "match": "missing",
+            "notes": "No SLA clause in contract"
+        },
+        {
+            "id": "comp-008",
+            "clauseName": "Payment Structure",
+            "contractValue": "Monthly installments",
+            "proposalValue": "Not specified in proposal",
+            "match": "partial",
+            "notes": "Payment structure reasonable but not explicitly proposed"
+        }
+    ]
+}

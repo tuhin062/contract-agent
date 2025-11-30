@@ -1,0 +1,361 @@
+[
+    {
+        "id": "template-001",
+        "name": "Standard NDA Template",
+        "category": "legal",
+        "description": "Mutual non-disclosure agreement for business discussions and potential partnerships",
+        "version": "2.1",
+        "lastUpdated": "2024-01-15T00:00:00Z",
+        "previewUrl": "/mock/sample.pdf",
+        "fields": [
+            {
+                "id": "field-001",
+                "name": "disclosing_party",
+                "label": "Disclosing Party Name",
+                "type": "text",
+                "required": true,
+                "placeholder": "Enter company name"
+            },
+            {
+                "id": "field-002",
+                "name": "receiving_party",
+                "label": "Receiving Party Name",
+                "type": "text",
+                "required": true,
+                "placeholder": "Enter company name"
+            },
+            {
+                "id": "field-003",
+                "name": "effective_date",
+                "label": "Effective Date",
+                "type": "date",
+                "required": true
+            },
+            {
+                "id": "field-004",
+                "name": "term_years",
+                "label": "Term (Years)",
+                "type": "number",
+                "required": true,
+                "defaultValue": 2,
+                "validation": {
+                    "min": 1,
+                    "max": 10
+                }
+            },
+            {
+                "id": "field-005",
+                "name": "governing_law",
+                "label": "Governing Law",
+                "type": "select",
+                "required": true,
+                "options": [
+                    "California",
+                    "New York",
+                    "Delaware",
+                    "Texas",
+                    "Washington"
+                ]
+            },
+            {
+                "id": "field-006",
+                "name": "purpose",
+                "label": "Purpose of Disclosure",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Describe the purpose..."
+            }
+        ]
+    },
+    {
+        "id": "template-002",
+        "name": "Employment Agreement - Tech",
+        "category": "employment",
+        "description": "Standard employment agreement for technical positions with IP assignment and non-compete clauses",
+        "version": "3.0",
+        "lastUpdated": "2024-02-01T00:00:00Z",
+        "fields": [
+            {
+                "id": "field-007",
+                "name": "employee_name",
+                "label": "Employee Full Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-008",
+                "name": "job_title",
+                "label": "Job Title",
+                "type": "text",
+                "required": true,
+                "placeholder": "e.g., Senior Software Engineer"
+            },
+            {
+                "id": "field-009",
+                "name": "start_date",
+                "label": "Start Date",
+                "type": "date",
+                "required": true
+            },
+            {
+                "id": "field-010",
+                "name": "annual_salary",
+                "label": "Annual Salary (USD)",
+                "type": "number",
+                "required": true,
+                "validation": {
+                    "min": 50000,
+                    "max": 500000
+                }
+            },
+            {
+                "id": "field-011",
+                "name": "work_location",
+                "label": "Work Location",
+                "type": "select",
+                "required": true,
+                "options": [
+                    "Remote",
+                    "San Francisco",
+                    "New York",
+                    "Austin",
+                    "Seattle",
+                    "Hybrid"
+                ]
+            },
+            {
+                "id": "field-012",
+                "name": "benefits",
+                "label": "Benefits Package",
+                "type": "multiselect",
+                "required": true,
+                "options": [
+                    "Health Insurance",
+                    "401(k)",
+                    "Stock Options",
+                    "PTO",
+                    "Remote Work"
+                ]
+            },
+            {
+                "id": "field-013",
+                "name": "non_compete_months",
+                "label": "Non-Compete Period (Months)",
+                "type": "number",
+                "required": false,
+                "defaultValue": 12,
+                "validation": {
+                    "min": 0,
+                    "max": 24
+                }
+            }
+        ]
+    },
+    {
+        "id": "template-003",
+        "name": "Service Agreement - Consulting",
+        "category": "vendor",
+        "description": "Professional services agreement for consulting engagements with milestone payments",
+        "version": "1.5",
+        "lastUpdated": "2024-01-20T00:00:00Z",
+        "fields": [
+            {
+                "id": "field-014",
+                "name": "client_name",
+                "label": "Client Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-015",
+                "name": "consultant_name",
+                "label": "Consultant/Firm Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-016",
+                "name": "project_scope",
+                "label": "Project Scope",
+                "type": "textarea",
+                "required": true,
+                "placeholder": "Describe the scope of work..."
+            },
+            {
+                "id": "field-017",
+                "name": "total_fee",
+                "label": "Total Project Fee (USD)",
+                "type": "number",
+                "required": true
+            },
+            {
+                "id": "field-018",
+                "name": "payment_structure",
+                "label": "Payment Structure",
+                "type": "select",
+                "required": true,
+                "options": [
+                    "Milestone-based",
+                    "Monthly",
+                    "Hourly",
+                    "Fixed Fee"
+                ]
+            },
+            {
+                "id": "field-019",
+                "name": "project_duration",
+                "label": "Estimated Duration (Months)",
+                "type": "number",
+                "required": true,
+                "validation": {
+                    "min": 1,
+                    "max": 24
+                }
+            },
+            {
+                "id": "field-020",
+                "name": "deliverables",
+                "label": "Key Deliverables",
+                "type": "textarea",
+                "required": true
+            }
+        ]
+    },
+    {
+        "id": "template-004",
+        "name": "Partnership Agreement",
+        "category": "partnership",
+        "description": "Strategic partnership agreement with revenue sharing and joint IP provisions",
+        "version": "2.0",
+        "lastUpdated": "2024-03-01T00:00:00Z",
+        "fields": [
+            {
+                "id": "field-021",
+                "name": "party_a",
+                "label": "Party A Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-022",
+                "name": "party_b",
+                "label": "Party B Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-023",
+                "name": "partnership_purpose",
+                "label": "Partnership Purpose",
+                "type": "textarea",
+                "required": true
+            },
+            {
+                "id": "field-024",
+                "name": "revenue_split_a",
+                "label": "Party A Revenue Share (%)",
+                "type": "number",
+                "required": true,
+                "validation": {
+                    "min": 0,
+                    "max": 100
+                }
+            },
+            {
+                "id": "field-025",
+                "name": "term_years",
+                "label": "Initial Term (Years)",
+                "type": "number",
+                "required": true,
+                "validation": {
+                    "min": 1,
+                    "max": 10
+                }
+            },
+            {
+                "id": "field-026",
+                "name": "ip_ownership",
+                "label": "IP Ownership Structure",
+                "type": "select",
+                "required": true,
+                "options": [
+                    "Joint Ownership",
+                    "Party A Owns",
+                    "Party B Owns",
+                    "Separate IP"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "template-005",
+        "name": "Vendor SaaS Agreement",
+        "category": "vendor",
+        "description": "Software as a Service subscription agreement with SLA commitments",
+        "version": "1.8",
+        "lastUpdated": "2024-02-15T00:00:00Z",
+        "fields": [
+            {
+                "id": "field-027",
+                "name": "customer_name",
+                "label": "Customer Name",
+                "type": "text",
+                "required": true
+            },
+            {
+                "id": "field-028",
+                "name": "service_tier",
+                "label": "Service Tier",
+                "type": "select",
+                "required": true,
+                "options": [
+                    "Basic",
+                    "Professional",
+                    "Enterprise",
+                    "Custom"
+                ]
+            },
+            {
+                "id": "field-029",
+                "name": "user_count",
+                "label": "Number of Users",
+                "type": "number",
+                "required": true,
+                "validation": {
+                    "min": 1
+                }
+            },
+            {
+                "id": "field-030",
+                "name": "monthly_fee",
+                "label": "Monthly Subscription Fee (USD)",
+                "type": "number",
+                "required": true
+            },
+            {
+                "id": "field-031",
+                "name": "sla_uptime",
+                "label": "SLA Uptime Commitment (%)",
+                "type": "number",
+                "required": true,
+                "defaultValue": 99.9,
+                "validation": {
+                    "min": 95,
+                    "max": 100
+                }
+            },
+            {
+                "id": "field-032",
+                "name": "contract_term",
+                "label": "Contract Term (Months)",
+                "type": "number",
+                "required": true,
+                "defaultValue": 12,
+                "validation": {
+                    "min": 1,
+                    "max": 36
+                }
+            }
+        ]
+    }
+]

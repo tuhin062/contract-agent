@@ -1,0 +1,183 @@
+[
+    {
+        "id": "user-001",
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "role": "admin",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+        "createdAt": "2023-01-15T00:00:00Z",
+        "lastLogin": "2024-03-15T10:30:00Z",
+        "permissions": [
+            {
+                "id": "perm-001",
+                "name": "Manage Contracts",
+                "resource": "contracts",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-002",
+                "name": "Manage Users",
+                "resource": "users",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-003",
+                "name": "Manage Templates",
+                "resource": "templates",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-004",
+                "name": "System Settings",
+                "resource": "settings",
+                "actions": [
+                    "read",
+                    "update"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "user-002",
+        "name": "Sarah Wilson",
+        "email": "sarah.wilson@example.com",
+        "role": "legal_team",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+        "createdAt": "2023-02-01T00:00:00Z",
+        "lastLogin": "2024-03-14T16:20:00Z",
+        "permissions": [
+            {
+                "id": "perm-001",
+                "name": "Manage Contracts",
+                "resource": "contracts",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-003",
+                "name": "Manage Templates",
+                "resource": "templates",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-005",
+                "name": "Validate Contracts",
+                "resource": "validation",
+                "actions": [
+                    "create",
+                    "read"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "user-003",
+        "name": "Michael Chen",
+        "email": "michael.chen@example.com",
+        "role": "business_user",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+        "createdAt": "2023-03-10T00:00:00Z",
+        "lastLogin": "2024-03-13T09:15:00Z",
+        "permissions": [
+            {
+                "id": "perm-006",
+                "name": "View Contracts",
+                "resource": "contracts",
+                "actions": [
+                    "read"
+                ]
+            },
+            {
+                "id": "perm-007",
+                "name": "Generate Contracts",
+                "resource": "templates",
+                "actions": [
+                    "read"
+                ]
+            },
+            {
+                "id": "perm-005",
+                "name": "Validate Contracts",
+                "resource": "validation",
+                "actions": [
+                    "create",
+                    "read"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "user-004",
+        "name": "Lisa Martinez",
+        "email": "lisa.martinez@example.com",
+        "role": "viewer",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
+        "createdAt": "2023-04-05T00:00:00Z",
+        "lastLogin": "2024-03-12T14:00:00Z",
+        "permissions": [
+            {
+                "id": "perm-006",
+                "name": "View Contracts",
+                "resource": "contracts",
+                "actions": [
+                    "read"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "user-005",
+        "name": "David Park",
+        "email": "david.park@example.com",
+        "role": "legal_team",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+        "createdAt": "2023-05-20T00:00:00Z",
+        "lastLogin": "2024-03-15T11:45:00Z",
+        "permissions": [
+            {
+                "id": "perm-001",
+                "name": "Manage Contracts",
+                "resource": "contracts",
+                "actions": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ]
+            },
+            {
+                "id": "perm-003",
+                "name": "Manage Templates",
+                "resource": "templates",
+                "actions": [
+                    "read",
+                    "update"
+                ]
+            }
+        ]
+    }
+]
