@@ -85,6 +85,30 @@
   }
 }
 
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) translateY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(168, 85, 247, 0.4), 0 0 20px rgba(168, 85, 247, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(168, 85, 247, 0.3), 0 0 60px rgba(236, 72, 153, 0.2);
+  }
+}
+
 @layer utilities {
   .step {
     counter-increment: step;
@@ -98,6 +122,10 @@
 
   .page-enter {
     animation: fadeIn 0.3s ease-out;
+  }
+
+  .file-badge-slide-in {
+    animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .card-enter {
@@ -114,5 +142,9 @@
 
   .spinner {
     @apply animate-spin rounded-full border-2 border-t-transparent;
+  }
+
+  .ai-glow-button {
+    animation: glow 3s ease-in-out infinite;
   }
 }

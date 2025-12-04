@@ -1,43 +1,106 @@
 # Contract Agent
 
-A professional contract management and generation platform with AI-powered validation and workflow automation.
+<div align="center">
 
-## 🚀 Features
+![Contract Agent Logo](https://img.shields.io/badge/Contract%20Agent-AI%20Powered-purple?style=for-the-badge)
 
-- **Contract Generation**: Create contracts from templates with AI assistance
-- **Smart Validation**: Automatic compliance checking and risk assessment
-- **Proposal Management**: Upload and review vendor proposals
-- **Template Library**: Pre-configured templates for common contract types
-- **Role-Based Access**: Different permissions for Users, Reviewers, and Admins
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+**Enterprise-grade AI-powered contract lifecycle automation platform**
 
-## 🛠️ Tech Stack
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?logo=postgresql)](https://www.postgresql.org)
+[![Pinecone](https://img.shields.io/badge/Pinecone-Vector%20DB-00A67E)](https://www.pinecone.io)
 
-### Frontend
-- **React 18** with TypeScript
-- **Vite** for fast development
-- **Tailwind CSS** for styling
-- **Shadcn/UI** component library
-- **React Query** for data fetching
-- **React Router** for navigation
-- **TanStack Table** for data tables
+</div>
 
-### Backend (Planned)
-- Python FastAPI
-- PostgreSQL database
-- JWT authentication
-- PDF processing
+---
 
-## 📦 Installation
+## 🌟 Overview
+
+Contract Agent is a modern, full-stack contract management platform that leverages AI to automate and streamline the entire contract lifecycle. Built with enterprise-grade security and scalability in mind.
+
+### Core Features
+
+| Feature | Description |
+|---------|-------------|
+| 📄 **Centralized Contract Hub** | Upload, store, and manage all contracts in one place with semantic search |
+| 🤖 **AI Contract Generation** | Generate contracts from templates using AI-powered variable filling |
+| ✅ **Smart Validation** | AI-powered risk analysis, clause detection, and compliance checking |
+| 💬 **RAG-Powered Chat** | Ask questions about your contracts with grounded, cited responses |
+| 🔐 **Role-Based Access** | Granular permissions for users, reviewers, and administrators |
+| 📊 **Audit Logging** | Complete activity tracking for compliance and security |
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Frontend (React)                         │
+│  TypeScript • Vite • TailwindCSS • shadcn/ui • React Query      │
+└─────────────────────────────────────────────────────────────────┘
+                                 │
+                                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Backend API (FastAPI)                       │
+│  Python • SQLAlchemy • Pydantic • JWT Auth • Rate Limiting      │
+└─────────────────────────────────────────────────────────────────┘
+                                 │
+        ┌────────────────────────┼────────────────────────┐
+        ▼                        ▼                        ▼
+┌───────────────┐    ┌───────────────────┐    ┌───────────────┐
+│  PostgreSQL   │    │     Pinecone      │    │  OpenRouter   │
+│   Database    │    │  Vector Search    │    │   LLM API     │
+└───────────────┘    └───────────────────┘    └───────────────┘
+```
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Git
+
+- **Python** 3.11+
+- **Node.js** 18+
+- **PostgreSQL** 14+
+- **Redis** (optional, for production)
+
+### Backend Setup
+
+```bash
+# Navigate to backend
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+.\venv\Scripts\activate
+
+# Activate (macOS/Linux)
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create database
+psql -U postgres -c "CREATE DATABASE contract_agent;"
+
+# Run migrations
+alembic upgrade head
+
+# Create admin user
+python scripts/create_admin.py
+
+# Start server
+uvicorn app.main:app --reload
+```
 
 ### Frontend Setup
 
 ```bash
-# Navigate to frontend folder
+# Navigate to frontend
 cd frontend
 
 # Install dependencies
@@ -47,98 +110,185 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+### Access the Application
 
-## 🎯 User Roles
+- **Frontend**: http://localhost:5173
+- **API Docs**: http://localhost:8000/api/v1/docs
+- **Health Check**: http://localhost:8000/health
 
-1. **Regular User**: Create contracts, upload proposals, view status
-2. **Legal Reviewer**: Validate contracts, approve/reject submissions
-3. **Admin**: Manage users, create templates, configure settings
+---
 
 ## 📁 Project Structure
 
 ```
-Contract Agent/
-├── frontend/              # React frontend application
+contract-agent/
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/           # API endpoints
+│   │   │   ├── admin/        # Admin endpoints
+│   │   │   ├── auth.py       # Authentication
+│   │   │   ├── contracts.py  # Contract CRUD
+│   │   │   ├── templates.py  # Template management
+│   │   │   ├── uploads.py    # File uploads
+│   │   │   ├── chat.py       # RAG chat
+│   │   │   ├── validation.py # Contract validation
+│   │   │   └── proposals.py  # Validation proposals
+│   │   ├── core/             # Core utilities
+│   │   │   ├── config.py     # Configuration
+│   │   │   ├── security.py   # JWT, encryption
+│   │   │   ├── logging.py    # Structured logging
+│   │   │   └── rate_limit.py # Rate limiting
+│   │   ├── db/               # Database layer
+│   │   │   ├── models/       # SQLAlchemy models
+│   │   │   ├── crud/         # CRUD operations
+│   │   │   └── session.py    # DB session
+│   │   ├── schemas/          # Pydantic schemas
+│   │   ├── services/         # Business logic
+│   │   │   ├── rag.py        # RAG service
+│   │   │   ├── embedding.py  # Embeddings
+│   │   │   ├── validation.py # Validation
+│   │   │   └── ...
+│   │   ├── workers/          # Background tasks
+│   │   └── tests/            # Test suite
+│   ├── alembic/              # Migrations
+│   ├── data/                 # File storage
+│   └── requirements.txt
+│
+├── frontend/
 │   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── pages/         # Page components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── lib/           # Utilities and helpers
-│   │   └── types/         # TypeScript type definitions
-│   ├── public/            # Static assets
+│   │   ├── components/       # React components
+│   │   │   ├── ui/           # shadcn/ui
+│   │   │   ├── error/        # Error boundaries
+│   │   │   └── loading/      # Skeletons
+│   │   ├── pages/            # Page components
+│   │   ├── services/         # API services
+│   │   ├── hooks/            # Custom hooks
+│   │   ├── contexts/         # React contexts
+│   │   ├── types/            # TypeScript types
+│   │   └── lib/              # Utilities
+│   ├── public/
 │   └── package.json
-└── backend/              # Backend API (in development)
+│
+└── README.md
 ```
 
-## 🌟 Key Features
+---
 
-### Contract Management
-- Create contracts from templates
-- View all contracts with advanced filtering
-- Download contracts as PDF
-- Track contract status and approvals
+## 🔐 User Roles
 
-### Validation System
-- AI-powered risk detection
-- Clause comparison against standards
-- Compliance percentage scoring
-- Detailed validation reports
+| Role | Permissions |
+|------|-------------|
+| **Regular** | Create contracts, upload documents, use AI chat |
+| **Reviewer** | All regular permissions + approve/reject contracts |
+| **Admin** | Full system access + user management + settings |
 
-### Template System
-- Professional contract templates
-- Customizable fields
-- Template versioning
-- Usage analytics
+---
 
-### Responsive Design
-- Mobile-optimized sidebar with hamburger menu
-- Scrollable data tables on small screens
-- Touch-friendly interface
-- Consistent experience across devices
+## 🤖 AI Features
 
-## 🎨 UI Components
+### RAG-Powered Chat
+- Upload documents and ask questions
+- Grounded responses with source citations
+- Confidence scoring
+- Multi-document context
 
-All UI components built with:
-- Consistent design system
-- Smooth animations and transitions
-- Accessibility considerations
-- Dark mode support
+### Contract Validation
+- Risk scoring (0-100%)
+- Clause detection
+- Compliance checking
+- Improvement suggestions
 
-## 📄 Documentation
+### AI Generation
+- Template-based contract creation
+- Variable substitution
+- AI-assisted drafting
 
-- **User Journey Guide**: See `User_Journey_Guide.md` for detailed user workflows
-- **GitHub Upload Guide**: See `GitHub_Upload_Guide.md` for deployment instructions
+---
 
-## 🔄 Development Status
+## 📊 API Endpoints
 
-✅ **Completed:**
-- Frontend UI with all pages
-- Component library
-- Responsive design
-- Mock data integration
-- User journey documentation
+### Authentication
+- `POST /api/v1/auth/login` - Login
+- `POST /api/v1/auth/register` - Register (admin)
+- `POST /api/v1/auth/refresh` - Refresh token
+- `GET /api/v1/auth/me` - Current user
 
-🚧 **In Progress:**
-- Backend API development
-- Real-time notifications
-- Advanced filtering
-- PDF generation
+### Contracts
+- `GET /api/v1/contracts` - List contracts
+- `POST /api/v1/contracts` - Create contract
+- `POST /api/v1/contracts/from-template` - Generate from template
+- `POST /api/v1/contracts/{id}/submit` - Submit for review
+- `POST /api/v1/contracts/{id}/approve` - Approve (reviewer)
+- `POST /api/v1/contracts/{id}/reject` - Reject (reviewer)
 
-## 🤝 Contributing
+### Chat
+- `POST /api/v1/chat/rag` - RAG chat
 
-This is a personal project. For suggestions or issues, please open an issue.
+### Validation
+- `POST /api/v1/validation/contracts/{id}/validate` - Validate contract
+
+### Admin
+- `GET /api/v1/admin/users` - List users
+- `POST /api/v1/admin/users` - Create user
+- `GET /api/v1/admin/audit` - Audit logs
+- `GET /api/v1/admin/settings/health` - System health
+
+---
+
+## 🧪 Testing
+
+```bash
+# Backend tests
+cd backend
+pytest
+
+# With coverage
+pytest --cov=app --cov-report=html
+
+# Frontend tests
+cd frontend
+npm test
+```
+
+---
+
+## 🚀 Production Deployment
+
+### Environment Variables
+
+See `backend/.env.example` for all required environment variables.
+
+**Critical for production:**
+- Generate new `SECRET_KEY`, `JWT_SECRET_KEY`, `ENCRYPTION_KEY`
+- Set `ENVIRONMENT=production`
+- Set `DEBUG=false`
+- Configure proper database URL
+- Set production CORS origins
+
+### Docker (Coming Soon)
+
+```bash
+docker-compose up -d
+```
+
+---
 
 ## 📝 License
 
-Private project - All rights reserved
+Private project - All rights reserved.
 
-## 👤 Author
+---
 
-Tuhin Dutta
+## 👥 Authors
 
-## 🙏 Acknowledgments
+**Tuhin Dutta** - Initial development and architecture
 
-- Shadcn/UI for component library
-- Tailwind CSS for styling system
-- React community for excellent tools
+---
+
+<div align="center">
+
+**Built with ❤️ using modern technologies**
+
+FastAPI • React • TypeScript • PostgreSQL • Pinecone • OpenRouter
+
+</div>

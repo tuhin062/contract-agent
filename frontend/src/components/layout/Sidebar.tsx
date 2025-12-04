@@ -6,7 +6,8 @@ import {
     Shield,
     FileCheck,
     FolderOpen,
-    Settings
+    Settings,
+    Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
@@ -18,6 +19,7 @@ const navigation = [
     { name: 'Validate', href: '/validate', icon: Shield },
     { name: 'Proposals', href: '/proposals', icon: FileCheck },
     { name: 'Templates', href: '/templates', icon: FolderOpen },
+    { name: 'Ask AI', href: '/ask-ai', icon: Sparkles, special: true },
 ]
 
 interface SidebarProps {
@@ -63,6 +65,36 @@ export function Sidebar({ open = true, onClose }: SidebarProps) {
                     {navigation.map((item) => {
                         const isActive = location.pathname.startsWith(item.href)
                         const Icon = item.icon
+
+                        // Special styling for Ask AI button
+                        if (item.special) {
+                            return (
+                                <Link
+                                    key={item.name}
+                                    to={item.href}
+                                    onClick={handleLinkClick}
+                                    className={cn(
+                                        'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
+                                        'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
+                                        'hover:from-purple-600 hover:to-pink-600',
+                                        'shadow-lg hover:shadow-xl',
+                                        'ai-glow-button',
+                                        isActive && 'ring-2 ring-purple-300 ring-offset-2 ring-offset-background'
+                                    )}
+                                >
+                                    <Icon className="h-5 w-5 animate-pulse" />
+                                    <span className="relative">
+                                        {item.name}
+                                        <span className="absolute -top-1 -right-6 flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                        </span>
+                                    </span>
+                                </Link>
+                            )
+                        }
+
+                        // Regular navigation items
                         return (
                             <Link
                                 key={item.name}
