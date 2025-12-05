@@ -187,11 +187,14 @@ async def upload_file(
     
     # Return upload record
     try:
+        # Refresh to get latest data including metadata
+        db.refresh(db_upload)
         result = UploadSchema.model_validate(db_upload)
         logger.info(f"Upload completed successfully: {db_upload.id}")
         return result
     except Exception as e:
         logger.error(f"Failed to serialize upload response: {str(e)}", exc_info=True)
+        logger.error(f"Upload object: id={db_upload.id}, filename={db_upload.filename}, custom_metadata={db_upload.custom_metadata}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to process upload response: {str(e)}"

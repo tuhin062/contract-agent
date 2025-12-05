@@ -23,13 +23,14 @@ class Upload(UploadBase):
     path: str
     text_extraction_status: ExtractionStatus
     pages_count: Optional[int] = None
-    metadata: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict, alias="custom_metadata")
     uploaded_by: UUID4
     uploaded_at: datetime
     updated_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True
+        populate_by_name = True  # Allow both alias and field name
 
 
 # Schema for upload list item (lighter version)

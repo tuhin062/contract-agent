@@ -126,7 +126,9 @@ export function AskAI() {
             }
 
             try {
+                console.log('Starting upload for file:', file.name, 'Size:', file.size)
                 const response = await uploadService.uploadFile(file)
+                console.log('Upload response:', response)
                 newFiles.push({
                     id: response.id,
                     name: file.name,
@@ -134,18 +136,29 @@ export function AskAI() {
                 })
                 toast.success('Document Uploaded', `${file.name} is ready for analysis`)
             } catch (error: any) {
-                console.error('Upload error:', error)
+                console.error('Upload error details:', {
+                    error,
+                    message: error.message,
+                    response: error.response,
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    request: error.request
+                })
                 let errorMessage = `Failed to upload ${file.name}`
                 
                 if (error.response) {
                     // Server responded with error
-                    errorMessage = error.response.data?.detail || error.response.data?.message || errorMessage
+                    const detail = error.response.data?.detail || error.response.data?.message
+                    errorMessage = detail || `Server error (${error.response.status})`
+                    console.error('Server error response:', error.response.status, detail)
                 } else if (error.request) {
                     // Request made but no response
                     errorMessage = 'Network error: Could not reach server. Please check your connection.'
+                    console.error('Network error - no response received')
                 } else {
                     // Error in request setup
                     errorMessage = error.message || errorMessage
+                    console.error('Request setup error:', error.message)
                 }
                 
                 toast.error('Upload Failed', errorMessage)
