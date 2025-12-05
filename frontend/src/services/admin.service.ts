@@ -150,8 +150,8 @@ export const adminService = {
      * Reset user password
      */
     async resetPassword(id: string, newPassword: string): Promise<void> {
-        await apiClient.post(`/admin/users/${id}/reset-password`, null, {
-            params: { new_password: newPassword }
+        await apiClient.post(`/admin/users/${id}/reset-password`, {
+            new_password: newPassword
         })
     },
 

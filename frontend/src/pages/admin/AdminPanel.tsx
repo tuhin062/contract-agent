@@ -30,11 +30,14 @@ import {
     Search,
     RefreshCw,
     UserPlus,
-    Trash2,
-    Edit,
+    Key,
     CheckCircle2,
     XCircle,
-    AlertTriangle
+    AlertTriangle,
+    Power,
+    UserCheck,
+    UserX,
+    PowerOff
 } from 'lucide-react'
 import { toast } from '@/lib/toast'
 import { useAuth } from '@/contexts/AuthContext'
@@ -42,6 +45,8 @@ import adminService from '@/services/admin.service'
 import type { User, UserRole } from '@/types/user'
 import { USER_ROLE_LABELS, USER_ROLE_COLORS, canAdmin } from '@/types/user'
 import { TableSkeleton, StatsCardSkeleton } from '@/components/loading/Skeleton'
+import { ResetPasswordDialog } from '@/components/admin/ResetPasswordDialog'
+import { formatDate, formatDateTime } from '@/lib/utils'
 
 export function AdminPanel() {
     const { user } = useAuth()
@@ -55,6 +60,17 @@ export function AdminPanel() {
         email: '',
         password: '',
         role: 'regular' as UserRole
+    })
+    const [resetPasswordDialog, setResetPasswordDialog] = useState<{
+        open: boolean
+        userId: string
+        userEmail: string
+        userName: string
+    }>({
+        open: false,
+        userId: '',
+        userEmail: '',
+        userName: ''
     })
 
     // Check admin access
@@ -110,7 +126,9 @@ export function AdminPanel() {
             toast.success('User Created', 'New user has been created successfully')
         },
         onError: (error: any) => {
-            toast.error('Error', error.response?.data?.detail || 'Failed to create user')
+            console.error('Create user error:', error)
+            const errorMessage = error.response?.data?.detail || error.message || 'Failed to create user'
+            toast.error('Error', errorMessage)
         }
     })
 
@@ -126,15 +144,17 @@ export function AdminPanel() {
         }
     })
 
-    const deleteUserMutation = useMutation({
-        mutationFn: (id: string) => adminService.deleteUser(id),
+    const resetPasswordMutation = useMutation({
+        mutationFn: ({ id, password }: { id: string; password: string }) =>
+            adminService.resetPassword(id, password),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
-            queryClient.invalidateQueries({ queryKey: ['admin', 'userStats'] })
-            toast.success('User Deleted', 'User has been permanently deleted')
+            toast.success('Password Reset', 'User password has been reset successfully')
         },
         onError: (error: any) => {
-            toast.error('Error', error.response?.data?.detail || 'Failed to delete user')
+            const errorMessage = error.response?.data?.detail || error.message || 'Failed to reset password'
+            toast.error('Error', errorMessage)
+            throw error // Re-throw so dialog can handle it
         }
     })
 
@@ -387,35 +407,97 @@ export function AdminPanel() {
                                                         </Badge>
                                                     )}
                                                 </td>
-                                                <td className="p-4 text-muted-foreground">
-                                                    {new Date(u.created_at).toLocaleDateString()}
+                                                <td className="p-4">
+                                                    <div className="space-y-1">
+                                                        <p className="text-sm font-medium text-foreground">
+                                                            {formatDate(u.created_at)}
+                                                        </p>
+                                                        {u.last_login ? (
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Last login: {formatDateTime(u.last_login)}
+                                                            </p>
+                                                        ) : (
+                                                            <p className="text-xs text-muted-foreground italic">
+                                                                Never logged in
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="p-4">
-                                                    <div className="flex items-center gap-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => toggleUserMutation.mutate({ 
-                                                                id: u.id, 
-                                                                isActive: u.is_active 
-                                                            })}
-                                                            disabled={u.id === user?.id}
-                                                        >
-                                                            {u.is_active ? 'Deactivate' : 'Activate'}
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="text-destructive hover:text-destructive"
+                                                    <div className="flex items-center gap-3">
+                                                        {/* Activate/Deactivate Icon Button */}
+                                                        <button
                                                             onClick={() => {
-                                                                if (confirm('Are you sure you want to delete this user?')) {
-                                                                    deleteUserMutation.mutate(u.id)
+                                                                const action = u.is_active ? 'deactivate' : 'activate'
+                                                                const confirmMessage = u.is_active
+                                                                    ? `Are you sure you want to deactivate ${u.name}? They will not be able to login, but all their data will be preserved.`
+                                                                    : `Are you sure you want to activate ${u.name}?`
+                                                                
+                                                                if (confirm(confirmMessage)) {
+                                                                    toggleUserMutation.mutate({ 
+                                                                        id: u.id, 
+                                                                        isActive: u.is_active 
+                                                                    })
                                                                 }
                                                             }}
-                                                            disabled={u.id === user?.id}
+                                                            disabled={u.id === user?.id || toggleUserMutation.isPending}
+                                                            className={`
+                                                                relative p-2.5 rounded-lg transition-all duration-200
+                                                                ${u.is_active 
+                                                                    ? 'text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-950/20' 
+                                                                    : 'text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950/20'
+                                                                }
+                                                                ${u.id === user?.id || toggleUserMutation.isPending
+                                                                    ? 'opacity-50 cursor-not-allowed' 
+                                                                    : 'cursor-pointer hover:scale-110 active:scale-95'
+                                                                }
+                                                                border border-transparent hover:border-current
+                                                                group
+                                                            `}
+                                                            title={u.is_active ? 'Deactivate User' : 'Activate User'}
                                                         >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
+                                                            {u.is_active ? (
+                                                                <PowerOff className="h-5 w-5 transition-transform group-hover:rotate-90" />
+                                                            ) : (
+                                                                <UserCheck className="h-5 w-5 transition-transform group-hover:scale-110" />
+                                                            )}
+                                                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 
+                                                                bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 
+                                                                text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 
+                                                                transition-opacity pointer-events-none whitespace-nowrap z-50
+                                                                shadow-lg">
+                                                                {u.is_active ? 'Deactivate' : 'Activate'}
+                                                            </span>
+                                                        </button>
+
+                                                        {/* Password Reset Icon Button */}
+                                                        <button
+                                                            onClick={() => setResetPasswordDialog({
+                                                                open: true,
+                                                                userId: u.id,
+                                                                userEmail: u.email,
+                                                                userName: u.name
+                                                            })}
+                                                            disabled={resetPasswordMutation.isPending}
+                                                            className="
+                                                                relative p-2.5 rounded-lg transition-all duration-200
+                                                                text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/20
+                                                                cursor-pointer hover:scale-110 active:scale-95
+                                                                border border-transparent hover:border-current
+                                                                group
+                                                                disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+                                                            "
+                                                            title="Reset Password"
+                                                        >
+                                                            <Key className="h-5 w-5 transition-transform group-hover:rotate-12" />
+                                                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 
+                                                                bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 
+                                                                text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 
+                                                                transition-opacity pointer-events-none whitespace-nowrap z-50
+                                                                shadow-lg">
+                                                                Reset Password
+                                                            </span>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -562,6 +644,24 @@ export function AdminPanel() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Reset Password Dialog */}
+            <ResetPasswordDialog
+                open={resetPasswordDialog.open}
+                onOpenChange={(open) => setResetPasswordDialog({ ...resetPasswordDialog, open })}
+                userId={resetPasswordDialog.userId}
+                userEmail={resetPasswordDialog.userEmail}
+                userName={resetPasswordDialog.userName}
+                onSuccess={() => {
+                    // Success is handled by the mutation
+                }}
+                onError={(error) => {
+                    // Error is handled by the mutation
+                }}
+                resetPasswordFn={async (id: string, password: string) => {
+                    await resetPasswordMutation.mutateAsync({ id, password })
+                }}
+            />
         </div>
     )
 }

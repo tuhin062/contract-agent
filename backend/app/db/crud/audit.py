@@ -44,8 +44,11 @@ def create_audit_log(
     Returns:
         Created audit log entry
     """
+    # Convert enum to its string value for storage
+    action_value = action.value if hasattr(action, 'value') else str(action)
+    
     audit_log = AuditLog(
-        action=action,
+        action=action_value,  # Store as string value (e.g., "user_created")
         description=description,
         user_id=user_id,
         resource_type=resource_type,

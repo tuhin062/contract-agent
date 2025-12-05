@@ -72,6 +72,16 @@ export const authService = {
 
         localStorage.setItem('access_token', response.data.access_token)
         return response.data.access_token
+    },
+
+    /**
+     * Reset password by email (for login page)
+     */
+    async resetPasswordByEmail(email: string, newPassword: string): Promise<void> {
+        await apiClient.post('/auth/reset-password-by-email', {
+            email,
+            new_password: newPassword
+        })
     }
 }
 

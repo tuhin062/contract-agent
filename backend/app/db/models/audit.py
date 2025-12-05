@@ -1,13 +1,15 @@
 """
 Audit Log database model for tracking user actions and system events.
 """
-from sqlalchemy import Column, String, Text, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import UUID, JSONB, INET
+from sqlalchemy.dialects.postgresql import UUID, JSONB, INET, ENUM
 from sqlalchemy.orm import relationship
 import uuid
 import enum
 from app.db.session import Base
+
+
 
 
 class AuditAction(str, enum.Enum):
@@ -70,7 +72,8 @@ class AuditLog(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     
     # Action information
-    action = Column(Enum(AuditAction), nullable=False, index=True)
+    # Use PostgreSQL ENUM - we'll ensure values are converted correctly in CRUD
+    action = Column(ENUM(AuditAction, name='auditaction', create_type=False, values_callable=lambda obj: [e.value for e in obj]), nullable=False, index=True)
     resource_type = Column(String(50), nullable=True)  # e.g., "contract", "user", "template"
     resource_id = Column(UUID(as_uuid=True), nullable=True, index=True)  # ID of affected resource
     

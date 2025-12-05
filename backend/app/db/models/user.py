@@ -33,6 +33,13 @@ class User(Base):
     role = Column(Enum(UserRole), default=UserRole.REGULAR, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     
+    # Password management
+    must_change_password = Column(Boolean, default=False, nullable=False)
+    password_changed_at = Column(DateTime(timezone=True), nullable=True)
+    
+    # Email verification
+    email_verified = Column(Boolean, default=False, nullable=False)
+    
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

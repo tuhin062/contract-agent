@@ -84,7 +84,10 @@ def create_user(db: Session, user: UserCreate) -> User:
         name=user.name,
         password_hash=hashed_password,
         role=user.role,
-        is_active=True
+        is_active=True,
+        must_change_password=False,  # Users created by admin don't need to change password immediately
+        password_changed_at=None,  # Password hasn't been changed yet
+        email_verified=False  # Email verification can be done later
     )
     
     db.add(db_user)
@@ -223,14 +226,22 @@ def delete_user(db: Session, user_id: UUID) -> bool:
         
     Returns:
         True if deleted, False if not found
+        
+    Raises:
+        IntegrityError: If deletion fails due to foreign key constraints
     """
     db_user = get_user(db, user_id)
     if not db_user:
         return False
     
-    db.delete(db_user)
-    db.commit()
-    return True
+    try:
+        db.delete(db_user)
+        db.commit()
+        return True
+    except Exception as e:
+        db.rollback()
+        # Re-raise to let the endpoint handle it with proper error messages
+        raise
 
 
 def search_users(

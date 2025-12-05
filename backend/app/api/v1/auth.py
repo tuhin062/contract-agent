@@ -4,9 +4,10 @@ Authentication endpoints for login, logout, and token refresh.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 from app.db.session import get_db
-from app.db.crud.user import get_user_by_email, update_last_login, create_user
+from app.db.crud.user import get_user_by_email, update_last_login, create_user, update_password
 from app.schemas.user import UserLogin, Token, TokenRefresh, User, UserCreate
 from app.core.security import (
     verify_password,
@@ -14,7 +15,7 @@ from app.core.security import (
     create_refresh_token,
     decode_token
 )
-from app.core.errors import UnauthorizedException
+from app.core.errors import UnauthorizedException, NotFoundException, BadRequestException
 from app.api.deps import get_current_user, require_admin
 
 router = APIRouter()
@@ -156,3 +157,94 @@ async def get_current_user_info(
 ):
     """Get current user information."""
     return User.model_validate(current_user)
+
+
+class PasswordResetByEmailRequest(BaseModel):
+    """Schema for password reset by email."""
+    email: str = Field(..., description="User email address")
+    new_password: str = Field(..., min_length=8, max_length=100, description="New password")
+
+
+@router.post("/reset-password-by-email")
+async def reset_password_by_email(
+    reset_data: PasswordResetByEmailRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Reset user password by email (for login page).
+    
+    This endpoint allows users to reset their password directly from the login page
+    by providing their email and new password. Same workflow as admin password reset.
+    
+    Args:
+        reset_data: Email and new password
+        db: Database session
+        
+    Returns:
+        Success message
+        
+    Raises:
+        NotFoundException: If user not found
+        BadRequestException: If user is inactive
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Get user by email
+        user = get_user_by_email(db, reset_data.email)
+        if not user:
+            logger.warning(f"Password reset attempted for non-existent email: {reset_data.email}")
+            raise NotFoundException(detail="User not found")
+        
+        # Check if user is active
+        if not user.is_active:
+            logger.warning(f"Password reset attempted for inactive user: {reset_data.email}")
+            raise BadRequestException(detail="Cannot reset password for inactive user. Please contact administrator.")
+        
+        # Update password
+        try:
+            updated = update_password(db, user.id, reset_data.new_password)
+            if not updated:
+                raise NotFoundException(detail="User not found")
+            logger.info(f"Password reset successful for user: {reset_data.email}")
+        except Exception as e:
+            logger.error(f"Error updating password: {str(e)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to reset password: {str(e)}"
+            )
+        
+        # Audit log (non-blocking - don't fail if it errors)
+        try:
+            from app.db.crud.audit import create_audit_log
+            from app.db.models.audit import AuditAction
+            
+            create_audit_log(
+                db=db,
+                action=AuditAction.PASSWORD_CHANGED,
+                description=f"Password reset by user via login page for '{updated.email}'",
+                user_id=updated.id,
+                resource_type="user",
+                resource_id=updated.id
+            )
+        except Exception as e:
+            # Log audit failure but don't fail the request
+            logger.warning(f"Failed to create audit log (non-critical): {str(e)}")
+            # Rollback any partial audit log transaction
+            try:
+                db.rollback()
+            except Exception:
+                pass
+        
+        return {"message": "Password reset successfully"}
+        
+    except (NotFoundException, BadRequestException, HTTPException):
+        # Re-raise known exceptions
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in reset_password_by_email: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
