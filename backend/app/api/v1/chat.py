@@ -355,11 +355,12 @@ async def chat_with_rag_stream(
         
         try:
             # First, retrieve context using enhanced retrieval
+            # Use lower min_score (0.15) for better retrieval, with adaptive fallback in service
             context_chunks = await enhanced_rag_service.retrieve_context_enhanced(
                 query=query,
                 file_ids=request.context_files if request.context_files else None,
                 top_k=request.top_k or 10,
-                min_score=0.35,
+                min_score=0.15,  # Very low threshold - adaptive fallback will handle quality
                 use_hybrid=True,
                 enforce_diversity=True
             )

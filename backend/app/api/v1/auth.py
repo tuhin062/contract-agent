@@ -71,21 +71,78 @@ async def login(
     Raises:
         UnauthorizedException: If credentials are invalid
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     # Get user by email
     user = get_user_by_email(db, credentials.email)
     if not user:
+        # Don't reveal if email exists - use generic error
         raise UnauthorizedException(detail="Incorrect email or password")
+    
+    # Check if user is active FIRST (security: check status before password verification)
+    if not user.is_active:
+        # Log failed login attempt for inactive user
+        try:
+            from app.db.crud.audit import create_audit_log
+            from app.db.models.audit import AuditAction
+            
+            create_audit_log(
+                db=db,
+                action=AuditAction.LOGIN_FAILED,
+                description=f"Login attempt by inactive user: {credentials.email}",
+                user_id=user.id,
+                resource_type="user",
+                resource_id=user.id,
+                success="failed",
+                error_message="User account is inactive"
+            )
+        except Exception:
+            pass  # Don't fail login if audit log fails
+        
+        logger.warning(f"Login attempt by inactive user: {credentials.email}")
+        raise UnauthorizedException(detail="Account deactivated")
     
     # Verify password
     if not verify_password(credentials.password, user.password_hash):
+        # Log failed login attempt
+        try:
+            from app.db.crud.audit import create_audit_log
+            from app.db.models.audit import AuditAction
+            
+            create_audit_log(
+                db=db,
+                action=AuditAction.LOGIN_FAILED,
+                description=f"Failed login attempt: incorrect password for {credentials.email}",
+                user_id=user.id,
+                resource_type="user",
+                resource_id=user.id,
+                success="failed",
+                error_message="Incorrect password"
+            )
+        except Exception:
+            pass
+        
         raise UnauthorizedException(detail="Incorrect email or password")
-    
-    # Check if user is active
-    if not user.is_active:
-        raise UnauthorizedException(detail="User account is inactive")
     
     # Update last login
     update_last_login(db, user.id)
+    
+    # Log successful login (non-blocking)
+    try:
+        from app.db.crud.audit import create_audit_log
+        from app.db.models.audit import AuditAction
+        
+        create_audit_log(
+            db=db,
+            action=AuditAction.LOGIN,
+            description=f"User logged in: {user.email}",
+            user_id=user.id,
+            resource_type="user",
+            resource_id=user.id
+        )
+    except Exception:
+        pass  # Don't fail login if audit log fails
     
     # Create tokens
     access_token = create_access_token(data={"sub": str(user.id)})
@@ -129,6 +186,20 @@ async def refresh_token(
     user_id_str = payload.get("sub")
     if not user_id_str:
         raise UnauthorizedException(detail="Invalid token payload")
+    
+    # Verify user exists and is active
+    from app.db.crud.user import get_user
+    from uuid import UUID
+    
+    try:
+        user_id = UUID(user_id_str)
+        user = get_user(db, user_id)
+        if not user:
+            raise UnauthorizedException(detail="User not found")
+        if not user.is_active:
+            raise UnauthorizedException(detail="Account deactivated")
+    except ValueError:
+        raise UnauthorizedException(detail="Invalid user ID in token")
     
     # Create new access token
     access_token = create_access_token(data={"sub": user_id_str})
@@ -197,10 +268,31 @@ async def reset_password_by_email(
             logger.warning(f"Password reset attempted for non-existent email: {reset_data.email}")
             raise NotFoundException(detail="User not found")
         
-        # Check if user is active
+        # Check if user is active (SECURITY: Must check before allowing password reset)
         if not user.is_active:
-            logger.warning(f"Password reset attempted for inactive user: {reset_data.email}")
-            raise BadRequestException(detail="Cannot reset password for inactive user. Please contact administrator.")
+            logger.warning(f"SECURITY: Password reset attempted for inactive user: {reset_data.email}")
+            
+            # Audit log the failed attempt (non-blocking)
+            try:
+                from app.db.crud.audit import create_audit_log
+                from app.db.models.audit import AuditAction
+                
+                create_audit_log(
+                    db=db,
+                    action=AuditAction.LOGIN_FAILED,  # Use LOGIN_FAILED as security event
+                    description=f"Password reset attempt blocked for inactive user: {reset_data.email}",
+                    user_id=user.id,
+                    resource_type="user",
+                    resource_id=user.id,
+                    success="failed",
+                    error_message="User account is inactive - password reset blocked"
+                )
+            except Exception as e:
+                logger.warning(f"Failed to create audit log for blocked password reset: {str(e)}")
+            
+            raise BadRequestException(
+                detail="Account deactivated. Please contact administrator."
+            )
         
         # Update password
         try:

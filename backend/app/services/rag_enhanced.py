@@ -51,7 +51,7 @@ class EnhancedRAGService:
         query: str,
         file_ids: Optional[List[str]] = None,
         top_k: int = 12,  # Retrieve more for reranking
-        min_score: float = 0.35,  # Lower threshold
+        min_score: float = 0.20,  # Lower threshold for better retrieval
         use_hybrid: bool = True,
         enforce_diversity: bool = True
     ) -> List[Dict]:
@@ -71,12 +71,16 @@ class EnhancedRAGService:
         """
         logger.info(f"Enhanced retrieval for query: '{query[:100]}...'")
         
-        # Step 0: Rewrite query for better retrieval
-        query_info = query_rewriter.rewrite_query(query)
-        rewritten_query = query_info.get("rewritten", query)
-        intent = query_info.get("intent")
-        
-        logger.info(f"Query rewritten: '{query}' -> '{rewritten_query}' (intent: {intent})")
+        # Step 0: Rewrite query for better retrieval (non-blocking)
+        rewritten_query = query
+        try:
+            query_info = query_rewriter.rewrite_query(query)
+            rewritten_query = query_info.get("rewritten", query)
+            intent = query_info.get("intent")
+            logger.info(f"Query rewritten: '{query}' -> '{rewritten_query}' (intent: {intent})")
+        except Exception as e:
+            logger.warning(f"Query rewriting failed: {str(e)}, using original query")
+            rewritten_query = query
         
         # Step 1: Generate query embedding (use rewritten query)
         query_embedding = await self.embedder.generate_embedding(rewritten_query)
@@ -110,14 +114,43 @@ class EnhancedRAGService:
         
         logger.info(f"Retrieved {len(results)} candidates from Pinecone")
         
+        # Log if no results found - try without filter if filter was applied
+        if not results:
+            logger.warning(f"No results retrieved from Pinecone for query: '{query[:100]}...'")
+            logger.warning(f"Filter used: {filter_dict}")
+            
+            # If filter was applied and no results, try without filter
+            if filter_dict:
+                logger.info(f"Retrying query without file_id filter...")
+                results = self.pinecone.query_vectors(
+                    query_vector=query_embedding,
+                    top_k=initial_k,
+                    filter_dict=None  # Remove filter
+                )
+                logger.info(f"Retry without filter returned {len(results)} results")
+            
+            # If still no results, check index status
+            if not results:
+                try:
+                    stats = self.pinecone.get_index_stats()
+                    total_vectors = stats.get("total_vector_count", 0)
+                    logger.warning(f"Pinecone index has {total_vectors} total vectors")
+                    if total_vectors == 0:
+                        logger.error("Pinecone index is empty! Documents may not be indexed.")
+                except Exception as e:
+                    logger.error(f"Could not get index stats: {e}")
+                return []
+        
         # Step 4: Apply keyword boosting if hybrid search enabled
         if use_hybrid:
             results = self._apply_keyword_boosting(query, results)
         
-        # Step 5: Filter by minimum score
+        # Step 5: Filter by minimum score (with adaptive fallback)
         relevant_chunks = []
+        all_scores = []
         for result in results:
             score = result.get("score", 0)
+            all_scores.append(score)
             if score >= min_score:
                 chunk = {
                     "text": result["metadata"].get("text", ""),
@@ -131,14 +164,67 @@ class EnhancedRAGService:
                 }
                 relevant_chunks.append(chunk)
         
+        # Log score distribution for debugging
+        if all_scores:
+            logger.info(f"Score distribution - Min: {min(all_scores):.3f}, Max: {max(all_scores):.3f}, Avg: {sum(all_scores)/len(all_scores):.3f}, Threshold: {min_score}")
+            logger.info(f"Top 5 raw scores: {sorted(all_scores, reverse=True)[:5]}")
+        
+        # Adaptive fallback: If no chunks meet threshold but we have results, use top results anyway
+        if not relevant_chunks and results:
+            logger.warning(f"No chunks met min_score threshold ({min_score}), but {len(results)} results found. Using top results with lower threshold.")
+            # Use a very lenient threshold - take top results regardless of score
+            adaptive_threshold = 0.1  # Very low threshold to ensure we get results
+            for result in results:
+                score = result.get("score", 0)
+                if score >= adaptive_threshold:
+                    chunk = {
+                        "text": result["metadata"].get("text", ""),
+                        "score": score,
+                        "file_id": result["metadata"].get("file_id"),
+                        "filename": result["metadata"].get("filename"),
+                        "page": result["metadata"].get("page"),
+                        "chunk_index": result["metadata"].get("chunk_index"),
+                        "section_title": result["metadata"].get("section_title"),
+                        "detected_clauses": result["metadata"].get("detected_clauses", [])
+                    }
+                    relevant_chunks.append(chunk)
+                    if len(relevant_chunks) >= top_k:  # Limit to top_k even with fallback
+                        break
+            
+            # If still no chunks, take top results regardless of score
+            if not relevant_chunks:
+                logger.warning(f"Taking top {min(top_k, len(results))} results regardless of score")
+                for i, result in enumerate(results[:top_k]):
+                    chunk = {
+                        "text": result["metadata"].get("text", ""),
+                        "score": result.get("score", 0),
+                        "file_id": result["metadata"].get("file_id"),
+                        "filename": result["metadata"].get("filename"),
+                        "page": result["metadata"].get("page"),
+                        "chunk_index": result["metadata"].get("chunk_index"),
+                        "section_title": result["metadata"].get("section_title"),
+                        "detected_clauses": result["metadata"].get("detected_clauses", [])
+                    }
+                    relevant_chunks.append(chunk)
+            
+            logger.info(f"Fallback retrieval: {len(relevant_chunks)} chunks using adaptive threshold {adaptive_threshold}")
+        
         # Step 6: Enforce diversity (avoid too many chunks from same section)
         if enforce_diversity and relevant_chunks:
             relevant_chunks = self._enforce_diversity(relevant_chunks, top_k)
         
-        # Step 7: Advanced reranking
+        # Step 7: Advanced reranking (non-blocking - preserve chunks if reranking fails)
         if relevant_chunks:
-            relevant_chunks = self._advanced_rerank(query, relevant_chunks)
-            relevant_chunks = relevant_chunks[:top_k]
+            try:
+                reranked = self._advanced_rerank(query, relevant_chunks)
+                if reranked and len(reranked) > 0:
+                    relevant_chunks = reranked[:top_k]
+                else:
+                    logger.warning("Reranking returned empty results, using original chunks")
+                    relevant_chunks = relevant_chunks[:top_k]
+            except Exception as e:
+                logger.warning(f"Reranking failed: {str(e)}, using original chunks")
+                relevant_chunks = relevant_chunks[:top_k]
         
         logger.info(f"Final retrieval: {len(relevant_chunks)} chunks after reranking")
         
@@ -589,12 +675,12 @@ If there are ungrounded claims, provide a revised answer that removes or flags t
         Returns:
             Complete response dict
         """
-        # Step 1: Enhanced retrieval
+        # Step 1: Enhanced retrieval (use lower min_score for better retrieval)
         context_chunks = await self.retrieve_context_enhanced(
             query=query,
             file_ids=file_ids,
             top_k=top_k,
-            min_score=0.35,
+            min_score=0.15,  # Very low threshold - adaptive fallback will handle quality
             use_hybrid=True,
             enforce_diversity=True
         )

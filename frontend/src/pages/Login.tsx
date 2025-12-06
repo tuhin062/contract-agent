@@ -32,7 +32,7 @@ const demoUsers = [
     {
         role: 'Regular User',
         email: 'user@contractagent.com',
-        password: 'user123',
+        password: 'user1234',
         icon: Users,
         color: 'text-green-500',
         bgColor: 'bg-green-50 dark:bg-green-950/20',
@@ -100,9 +100,21 @@ export function Login() {
                 await login(email, password)
                 toast.success('Login successful', 'Welcome back!')
                 navigate('/dashboard')
-            } catch (err) {
-                setError('Invalid credentials')
-                toast.error('Login failed', 'Invalid email or password')
+            } catch (err: any) {
+                // Extract error message from backend response
+                const errorMessage = err.response?.data?.detail || err.message || 'Invalid email or password'
+                setError(errorMessage)
+                
+                // Detect error type and show appropriate message
+                const errorLower = errorMessage.toLowerCase()
+                const isAccountDeactivated = errorLower.includes('deactivated') || 
+                                             errorLower.includes('inactive')
+                
+                if (isAccountDeactivated) {
+                    toast.error('Cannot Login', 'Account Deactivated')
+                } else {
+                    toast.error('Login Failed', 'Invalid email or password')
+                }
             }
         }
     }

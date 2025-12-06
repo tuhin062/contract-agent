@@ -1,0 +1,123 @@
+[1mdiff --git a/backend/app/api/v1/auth.py b/backend/app/api/v1/auth.py[m
+[1mindex 18893bf..553c2fe 100644[m
+[1m--- a/backend/app/api/v1/auth.py[m
+[1m+++ b/backend/app/api/v1/auth.py[m
+[36m@@ -71,22 +71,79 @@[m [masync def login([m
+     Raises:[m
+         UnauthorizedException: If credentials are invalid[m
+     """[m
+[32m+[m[32m    import logging[m
+[32m+[m[32m    logger = logging.getLogger(__name__)[m
+[32m+[m[41m    [m
+     # Get user by email[m
+     user = get_user_by_email(db, credentials.email)[m
+     if not user:[m
+[32m+[m[32m        # Don't reveal if email exists - use generic error[m
+         raise UnauthorizedException(detail="Incorrect email or password")[m
+     [m
+[32m+[m[32m    # Check if user is active FIRST (security: check status before password verification)[m
+[32m+[m[32m    if not user.is_active:[m
+[32m+[m[32m        # Log failed login attempt for inactive user[m
+[32m+[m[32m        try:[m
+[32m+[m[32m            from app.db.crud.audit import create_audit_log[m
+[32m+[m[32m            from app.db.models.audit import AuditAction[m
+[32m+[m[41m            [m
+[32m+[m[32m            create_audit_log([m
+[32m+[m[32m                db=db,[m
+[32m+[m[32m                action=AuditAction.LOGIN_FAILED,[m
+[32m+[m[32m                description=f"Login attempt by inactive user: {credentials.email}",[m
+[32m+[m[32m                user_id=user.id,[m
+[32m+[m[32m                resource_type="user",[m
+[32m+[m[32m                resource_id=user.id,[m
+[32m+[m[32m                success="failed",[m
+[32m+[m[32m                error_message="User account is inactive"[m
+[32m+[m[32m            )[m
+[32m+[m[32m        except Exception:[m
+[32m+[m[32m            pass  # Don't fail login if audit log fails[m
+[32m+[m[41m        [m
+[32m+[m[32m        logger.warning(f"Login attempt by inactive user: {credentials.email}")[m
+[32m+[m[32m        raise UnauthorizedException(detail="User account is inactive. Please contact administrator.")[m
+[32m+[m[41m    [m
+     # Verify password[m
+     if not verify_password(credentials.password, user.password_hash):[m
+[32m+[m[32m        # Log failed login attempt[m
+[32m+[m[32m        try:[m
+[32m+[m[32m            from app.db.crud.audit import create_audit_log[m
+[32m+[m[32m            from app.db.models.audit import AuditAction[m
+[32m+[m[41m            [m
+[32m+[m[32m            create_audit_log([m
+[32m+[m[32m                db=db,[m
+[32m+[m[32m                action=AuditAction.LOGIN_FAILED,[m
+[32m+[m[32m                description=f"Failed login attempt: incorrect password for {credentials.email}",[m
+[32m+[m[32m                user_id=user.id,[m
+[32m+[m[32m                resource_type="user",[m
+[32m+[m[32m                resource_id=user.id,[m
+[32m+[m[32m                success="failed",[m
+[32m+[m[32m                error_message="Incorrect password"[m
+[32m+[m[32m            )[m
+[32m+[m[32m        except Exception:[m
+[32m+[m[32m            pass[m
+[32m+[m[41m        [m
+         raise UnauthorizedException(detail="Incorrect email or password")[m
+     [m
+[31m-    # Check if user is active[m
+[31m-    if not user.is_active:[m
+[31m-        raise UnauthorizedException(detail="User account is inactive")[m
+[31m-    [m
+     # Update last login[m
+     update_last_login(db, user.id)[m
+     [m
+[32m+[m[32m    # Log successful login (non-blocking)[m
+[32m+[m[32m    try:[m
+[32m+[m[32m        from app.db.crud.audit import create_audit_log[m
+[32m+[m[32m        from app.db.models.audit import AuditAction[m
+[32m+[m[41m        [m
+[32m+[m[32m        create_audit_log([m
+[32m+[m[32m            db=db,[m
+[32m+[m[32m            action=AuditAction.LOGIN,[m
+[32m+[m[32m            description=f"User logged in: {user.email}",[m
+[32m+[m[32m            user_id=user.id,[m
+[32m+[m[32m            resource_type="user",[m
+[32m+[m[32m            resource_id=user.id[m
+[32m+[m[32m        )[m
+[32m+[m[32m    except Exception:[m
+[32m+[m[32m        pass  # Don't fail login if audit log fails[m
+[32m+[m[41m    [m
+     # Create tokens[m
+     access_token = create_access_token(data={"sub": str(user.id)})[m
+     refresh_token = create_refresh_token(data={"sub": str(user.id)})[m
+[36m@@ -197,10 +254,31 @@[m [masync def reset_password_by_email([m
+             logger.warning(f"Password reset attempted for non-existent email: {reset_data.email}")[m
+             raise NotFoundException(detail="User not found")[m
+         [m
+[31m-        # Check if user is active[m
+[32m+[m[32m        # Check if user is active (SECURITY: Must check before allowing password reset)[m
+         if not user.is_active:[m
+[31m-            logger.warning(f"Password reset attempted for inactive user: {reset_data.email}")[m
+[31m-            raise BadRequestException(detail="Cannot reset password for inactive user. Please contact administrator.")[m
+[32m+[m[32m            logger.warning(f"SECURITY: Password reset attempted for inactive user: {reset_data.email}")[m
+[32m+[m[41m            [m
+[32m+[m[32m            # Audit log the failed attempt (non-blocking)[m
+[32m+[m[32m            try:[m
+[32m+[m[32m                from app.db.crud.audit import create_audit_log[m
+[32m+[m[32m                from app.db.models.audit import AuditAction[m
+[32m+[m[41m                [m
+[32m+[m[32m                create_audit_log([m
+[32m+[m[32m                    db=db,[m
+[32m+[m[32m                    action=AuditAction.LOGIN_FAILED,  # Use LOGIN_FAILED as security event[m
+[32m+[m[32m                    description=f"Password reset attempt blocked for inactive user: {reset_data.email}",[m
+[32m+[m[32m                    user_id=user.id,[m
+[32m+[m[32m                    resource_type="user",[m
+[32m+[m[32m                    resource_id=user.id,[m
+[32m+[m[32m                    success="failed",[m
+[32m+[m[32m                    error_message="User account is inactive - password reset blocked"[m
+[32m+[m[32m                )[m
+[32m+[m[32m            except Exception as e:[m
+[32m+[m[32m                logger.warning(f"Failed to create audit log for blocked password reset: {str(e)}")[m
+[32m+[m[41m            [m
+[32m+[m[32m            raise BadRequestException([m
+[32m+[m[32m                detail="Cannot reset password. Your account has been deactivated. Please contact your administrator to reactivate your account."[m
+[32m+[m[32m            )[m
+         [m
+         # Update password[m
+         try:[m

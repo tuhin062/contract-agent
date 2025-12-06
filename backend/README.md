@@ -6,21 +6,40 @@ Enterprise-grade FastAPI backend for Contract Agent with AI-powered contract man
 
 ### Prerequisites
 
-- Python 3.11+
+- **Python 3.11 or higher** (Required - check with `python --version`)
 - PostgreSQL 14+
-- Redis (Memurai for Windows)
+- Redis (Memurai for Windows) or Redis for Linux/Mac
 
 ### Setup
 
-1. **Create Virtual Environment**
+1. **Verify Python Version**
+```powershell
+python --version
+# Should show Python 3.11.x or higher
+```
+
+2. **Create Virtual Environment**
 ```powershell
 cd backend
 python -m venv venv
-.\venv\Scripts\activate
+.\venv\Scripts\activate  # Windows
+# OR
+source venv/bin/activate  # Linux/Mac
 ```
 
-2. **Install Dependencies**
+3. **Upgrade pip (Important)**
 ```powershell
+python -m pip install --upgrade pip
+```
+
+4. **Install Dependencies**
+```powershell
+pip install -r requirements.txt
+```
+
+**Note:** If you encounter version conflicts, ensure you're using Python 3.11+ and try:
+```powershell
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
@@ -227,7 +246,16 @@ gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 
 ### Import Errors
 - Ensure virtual environment is activated
+- Verify Python version: `python --version` (must be 3.11+)
+- Upgrade pip: `python -m pip install --upgrade pip`
 - Reinstall dependencies: `pip install -r requirements.txt`
+- If issues persist, try: `pip install --upgrade pip setuptools wheel` then reinstall
+
+### Version Mismatch Errors
+- Ensure you're using Python 3.11 or higher
+- Delete virtual environment and recreate: `rm -rf venv` (Linux/Mac) or `rmdir /s venv` (Windows)
+- Activate venv and reinstall: `pip install -r requirements.txt`
+- Check `.python-version` file exists (should contain `3.11`)
 
 ### API Key Errors
 - Verify keys are correct in `.env`

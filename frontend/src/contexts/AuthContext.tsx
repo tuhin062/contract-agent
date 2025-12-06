@@ -40,9 +40,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 token: response.access_token,
                 isAuthenticated: true,
             })
-        } catch (error) {
+        } catch (error: any) {
             console.error('Login error:', error)
-            throw new Error('Invalid credentials')
+            // Preserve original error to allow proper error handling in components
+            // Check if it's an axios error with response data
+            if (error?.response?.data?.detail) {
+                // Create error with backend message
+                const backendError = new Error(error.response.data.detail)
+                // Attach response for error handling
+                ;(backendError as any).response = error.response
+                throw backendError
+            }
+            // For other errors, preserve original error
+            throw error
         }
     }, [])
 
